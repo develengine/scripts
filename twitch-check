@@ -1,0 +1,16 @@
+#! /bin/sh
+
+txtn=$(tput sgr0)
+txtr=$(tput setaf 1)
+
+while IFS='' read -r LINE || [ -n "${LINE}" ]; do
+    lc=$(youtube-dl https://twitch.tv/${LINE} --skip-download 2>&1 | grep "offline" | wc -l)
+
+    if [ "$lc" = "0" ]
+    then
+        echo "${LINE} is online"
+    else
+        echo "${txtr}${LINE} is offline${txtn}"
+    fi
+done < ~/twitch.txt
+

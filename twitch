@@ -1,0 +1,11 @@
+#! /bin/sh
+
+selected=$(dmenu -l 20 -m 0 -p "Streamer:" < ~/twitch.txt)
+
+if [ "$selected" = "" ]
+then
+    exit
+fi
+
+mpv https://twitch.tv/${selected}
+

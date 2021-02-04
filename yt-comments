@@ -1,0 +1,5 @@
+#! /bin/sh
+
+YTID=$(echo $1 | cut -d'=' -f 2)
+
+spit-comments -y $YTID -l 1000 | less
