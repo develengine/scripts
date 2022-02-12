@@ -1,3 +1,3 @@
 #! /bin/sh
 
-alsaloop -C hw:2,0 -P default -t 10000-A0 -S5
+alsaloop -C default -P default -U
