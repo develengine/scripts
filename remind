@@ -1,0 +1,5 @@
+#! /bin/sh
+
+# sleep `expr $1 \* 60`; notify-send "$2"; sam-say "$2"
+
+echo notify-send \"$2\"";" sam-say "$2" | at $1
