@@ -1,0 +1,10 @@
+#! /bin/sh
+
+txtn=$(tput sgr0)
+
+while [ "$(echo "`twitch-check $1`" | cut -d' ' -f 3)" = "offline${txtn}" ]; do
+    sleep 10
+done
+
+notify-send -t 10000 "$1 is live"; sam-say $1 is live
+
