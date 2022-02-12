@@ -1,0 +1,43 @@
+#! /bin/sh
+
+CFG=$HOME/backup.conf
+
+if [ ! -f $CFG ]; then
+    echo "no config file: $CFG" 1>&2
+    exit 1
+fi
+
+RES=${1-$HOME/backup}
+
+[ -d ${RES} ] && rm -rf ${RES}
+mkdir ${RES}
+
+while IFS='' read -r LINE || [ -n "${LINE}" ]; do
+    STRIPPED=$(echo ${LINE})
+
+    if [ -n "${STRIPPED}" ]; then
+        OPTS=$(echo "${STRIPPED}" | cut -s -d ' ' -f 2)
+        PATHH=${STRIPPED%%' '*}
+
+        if [ -n "${PATHH##/*}" ] && [ -n "${PATHH##"~/"*}" ]; then
+            echo "error: config entry must be absolute or starting with '~/'" 1>&2
+            echo "  provided: '${PATHH}" 1>&2
+            exit 1
+        fi
+
+        if [ -z "${PATHH%~*}" ]; then
+            PATHH=$HOME${PATHH#~*}
+        fi
+
+        OUT=$(echo "$PATHH" | sed s/"\/"/_/g)
+
+        if [ -n "$OPTS" ] && [ -z "${OPTS##*c*}" ]; then
+            ABSOLUTE=${PATHH%/*}
+            BASE=${PATHH##*/}
+            tar -C ${ABSOLUTE} -czvf ${RES}/${OUT}.tar.gz ${BASE}
+        else
+            cp -rf ${PATHH} ${RES}/${OUT}
+        fi
+    fi
+done < $CFG
+
